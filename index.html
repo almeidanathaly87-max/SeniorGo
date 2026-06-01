@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SeniorGO - Verificador</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Inter:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <!-- TELA 1: LOGIN -->
+    <div id="view-login" class="screen active">
+        <div class="top-banner-large">
+            <div class="logo-group">
+                <img src="img/logo.png" alt="Logo" class="logo-img-l">
+                <h1>SeniorGO</h1>
+            </div>
+        </div>
+        <div class="content-area">
+            <h2 class="serif">Seja bem-vindo(a)</h2>
+            <p>Escreva seu nome para acessar o site.</p>
+            <div class="main-card">
+                <input type="text" id="user-name-input" placeholder="Escreva seu nome aqui">
+                <button onclick="goToSearch()" class="btn-action">AVANÇAR</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- TELA 2: BUSCA -->
+    <div id="view-search" class="screen">
+        <header class="navbar">
+            <div class="nav-logo">
+                <img src="img/logo.png" alt="Logo">
+                <span>SeniorGO</span>
+            </div>
+            <div class="nav-tools">
+                <span id="user-tag" class="pill">OLÁ, VISITANTE</span>
+                <div class="access-controls">
+                    <button onclick="changeFontSize(2)">A+</button>
+                    <button onclick="changeFontSize(-2)">A-</button>
+                    <button onclick="toggleContrast()">ALTO CONTRASTE</button>
+                </div>
+            </div>
+        </header>
+
+        <section class="hero-banner">
+            <div class="hero-container">
+                <h1 class="serif">DESCUBRA SE A INFORMAÇÃO É VERDADEIRA OU FALSA</h1>
+                <div class="image-wrapper">
+                    <img src="img/casal-de-velhinhos.png" alt="Idosos" class="hero-img">
+                </div>
+            </div>
+        </section>
+
+        <div class="content-area">
+            <div class="main-card">
+                <label class="search-label">Texto ou vídeo</label>
+                <input type="text" id="search-input" placeholder="Escreva ou cole o vídeo aqui">
+                <button id="btn-verificar" onclick="processResult()" class="btn-action">AVANÇAR</button>
+                <p id="loading-msg" style="display:none; text-align:center; margin-top:10px;">Analisando dados...</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- TELA 3: RESULTADO -->
+    <div id="view-result" class="screen">
+        <header class="navbar">
+            <div class="nav-logo"><img src="img/logo.png" alt=""><span>SeniorGO</span></div>
+            <button onclick="showScreen('view-search')" class="btn-back">VOLTAR</button>
+        </header>
+
+        <div class="content-area centered">
+            <div id="result-card" class="result-box">
+                <div id="result-icon" class="res-icon"></div>
+                <h2 id="result-title" class="serif"></h2>
+                <p id="result-text"></p>
+                <button onclick="showScreen('view-search')" class="btn-action" style="margin-top: 30px;">NOVA CONSULTA</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/script.js"></script>
+</body>
+</html>

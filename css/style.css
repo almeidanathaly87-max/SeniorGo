@@ -1,0 +1,122 @@
+:root {
+    --primary-blue: #2563EB;
+    --border-blue: #8DB5FF;
+    --bg-input: #D1D1D1;
+    --gradient: linear-gradient(90deg, #BFD6DD 0%, #7EA8FF 45%, #2563EB 100%);
+    --text-color: #000000;
+    --card-bg: #FFFFFF;
+    --base-font: 18px;
+}
+
+/* RESET */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { 
+    font-family: 'Inter', sans-serif; 
+    font-size: var(--base-font);
+    color: var(--text-color);
+    background-color: #fff;
+    overflow-x: hidden;
+}
+.serif { font-family: 'Playfair Display', serif; }
+
+/* CONTROLE DE TELAS */
+.screen { display: none; min-height: 100vh; flex-direction: column; }
+.screen.active { display: flex; }
+
+/* TELA 1 HEADER */
+.top-banner-large {
+    background: var(--gradient);
+    height: 45vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.logo-group { display: flex; align-items: center; gap: 20px; }
+.logo-img-l { width: clamp(80px, 15vw, 150px); }
+.logo-group h1 { font-size: clamp(3rem, 10vw, 6rem); font-family: 'Playfair Display'; }
+
+/* CARDS (ESTILO IDENTICO À FOTO) */
+.content-area { padding: 40px 10%; }
+.content-area.centered { flex-grow: 1; display: flex; justify-content: center; align-items: center; }
+
+.main-card {
+    background: var(--card-bg);
+    border: 2px solid var(--border-blue);
+    border-radius: 40px;
+    padding: 40px;
+    box-shadow: 10px 10px 25px rgba(0,0,0,0.1);
+}
+
+.search-label { display: block; font-size: 2.5rem; margin-bottom: 20px; font-weight: bold; }
+
+input {
+    width: 100%;
+    background: var(--bg-input);
+    border: none;
+    border-radius: 50px;
+    padding: 20px 30px;
+    font-size: 1.2rem;
+    margin-bottom: 25px;
+    outline: none;
+}
+
+.btn-action {
+    display: block;
+    width: 60%;
+    margin: 0 auto;
+    background: var(--primary-blue);
+    color: white;
+    border: none;
+    border-radius: 50px;
+    padding: 15px;
+    font-size: 2rem;
+    font-weight: bold;
+    text-decoration: underline;
+    cursor: pointer;
+    font-family: 'Playfair Display';
+}
+
+/* NAVBAR TELA 2/3 */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 5%;
+    border-bottom: 1px solid #ddd;
+}
+.nav-logo { display: flex; align-items: center; gap: 10px; font-family: 'Playfair Display'; font-weight: bold; font-size: 1.5rem; }
+.nav-logo img { width: 40px; }
+.pill { background: #E7E7E7; padding: 8px 20px; border-radius: 50px; font-weight: bold; font-size: 0.9rem; }
+.access-controls button { background: none; border: none; font-weight: bold; cursor: pointer; margin-left: 10px; }
+
+/* BANNER AZUL BUSCA */
+.hero-banner { background: var(--gradient); padding: 0 5%; overflow: hidden; }
+.hero-container { display: flex; align-items: flex-end; justify-content: space-between; max-width: 1200px; margin: 0 auto; }
+.hero-container h1 { font-size: clamp(1.5rem, 4vw, 3rem); width: 50%; padding-bottom: 50px; line-height: 1.2; }
+
+.image-wrapper { width: 45%; position: relative; }
+.hero-img { width: 100%; display: block; }
+
+.float-badge { position: absolute; background: #fff; padding: 10px 20px; border-radius: 15px; font-weight: bold; box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
+
+/* RESULTADOS TELA 3 */
+.result-box { width: 100%; max-width: 800px; padding: 50px; border-radius: 40px; text-align: center; }
+.res-verdadeiro { background: #EDF7F0; border: 4px solid #1F7A3A; color: #1F7A3A; }
+.res-falso { background: #FDEEEE; border: 4px solid #DC2626; color: #DC2626; }
+.res-icon { font-size: 5rem; margin-bottom: 20px; }
+
+/* ALTO CONTRASTE */
+body.contrast-mode { background-color: #000 !important; color: #fff !important; --text-color: #fff; }
+body.contrast-mode .main-card, body.contrast-mode .result-box { background: #000; border-color: #fff; color: #fff; }
+body.contrast-mode .navbar, body.contrast-mode .top-banner-large, body.contrast-mode .hero-banner { background: #5b5b58; border-bottom: 2px solid #fff; }
+body.contrast-mode .btn-action { background: #fff; color: #000; }
+body.contrast-mode input { background: #222; border: 1px solid #fff; color: #fff; }
+body.contrast-mode .float-badge { background: #000; color: #fff; border: 1px solid #fff; }
+
+/* RESPONSIVO */
+@media (max-width: 768px) {
+    .hero-container { flex-direction: column; align-items: center; text-align: center; }
+    .hero-container h1 { width: 100%; padding: 30px 0; font-size: 1.8rem; }
+    .image-wrapper { width: 90%; }
+    .btn-action { width: 100%; font-size: 1.5rem; }
+}
