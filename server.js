@@ -2,13 +2,13 @@ const express = require("express");
 const cors = require("cors");
 
 const app = express();
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 
 app.use(cors());
 app.use(express.json());
 
 // Cole sua chave entre as aspas
-const API_KEY = "AIzaSyD-7FkauDy-u0TPRUnS-Q1OxtTs-LsJzwA";
+const API_KEY = process.env.API_KEY;
 
 app.post("/verificar", async (req, res) => {
   const { query } = req.body;
