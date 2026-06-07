@@ -31,7 +31,7 @@ async function processResult() {
 
     try {
         // Chamada para o seu servidor local (ou API do Google direta)
-        const response = await fetch("http://localhost:3000/verificar", {
+       const response = await fetch("https://seniorgo.onrender.com/verificar", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ query: query })

@@ -8,7 +8,7 @@ app.use(cors());
 app.use(express.json());
 
 // Cole sua chave entre as aspas
-const API_KEY = process.env.API_KEY;
+const API_KEY = process.env.GOOGLE_API_KEY;
 
 app.post("/verificar", async (req, res) => {
   const { query } = req.body;
