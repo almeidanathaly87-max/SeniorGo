@@ -6,49 +6,55 @@ const { GoogleGenerativeAI } = require("@google/generative-ai");
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Configuração do Gemini (Ele vai ler a chave que vamos configurar no Render)
+// Configuração do Gemini usando a variável de ambiente
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
 app.use(cors());
 app.use(express.json());
 
-// Rota de verificação
 app.post("/verificar", async (req, res) => {
-  const { query } = req.body;
+    const { query } = req.body;
 
-  if (!query) {
-    return res.status(400).json({ found: false, error: "Consulta vazia." });
-  }
+    if (!query) {
+        return res.status(400).json({ found: false, error: "Consulta vazia." });
+    }
 
-  try {
-    const prompt = `
-      Você é o Assistente Especialista do SeniorGo. Analise a seguinte informação para um idoso: "${query}"
-      1. Comece com: [VERDADEIRO], [FALSO] ou [SUSPEITO].
-      2. Explique de forma simples e carinhosa em no máximo 3 parágrafos.
-    `;
+    try {
+        const prompt = `
+        Você é o especialista do SeniorGo. Analise para um idoso: "${query}"
+        1. Comece com [VERDADEIRO], [FALSO] ou [SUSPEITO].
+        2. Explique de forma simples e carinhosa em até 3 parágrafos.
+        `;
 
-    const result = await model.generateContent(prompt);
-    const analiseIA = result.response.text();
+        const result = await model.generateContent(prompt);
+        const response = await result.response;
+        const analiseIA = response.text();
 
-    let rating = "unknown";
-    if (analiseIA.includes("[FALSO]")) rating = "false";
-    else if (analiseIA.includes("[VERDADEIRO]")) rating = "true";
+        // Lógica para definir a cor (rating) no seu CSS
+        let rating = "unknown";
+        if (analiseIA.includes("[FALSO]")) rating = "false";
+        else if (analiseIA.includes("[VERDADEIRO]")) rating = "true";
 
-    return res.json({
-      found: true,
-      rating: rating,
-      texto: analiseIA,
-      titulo: "Análise da SeniorGo AI",
-      fonte: "Inteligência Artificial Gemini"
-    });
+        return res.json({
+            found: true,
+            rating: rating,
+            texto: analiseIA,
+            titulo: "Análise da SeniorGo AI",
+            fonte: "Inteligência Artificial Gemini"
+        });
 
-  } catch (erro) {
-    console.error(erro);
-    return res.status(500).json({ found: false, error: "Erro ao consultar a IA." });
-  }
+    } catch (error) {
+        console.error("Erro no servidor:", error);
+        return res.status(500).json({ found: false, error: "Erro ao consultar a IA." });
+    }
+});
+
+// Rota padrão para teste no navegador
+app.get("/", (req, res) => {
+    res.send("Servidor do SeniorGo está ATIVO!");
 });
 
 app.listen(PORT, () => {
-  console.log(`Servidor rodando na porta ${PORT}`);
+    console.log(`Servidor rodando na porta ${PORT}`);
 });
