@@ -30,12 +30,12 @@ async function processResult() {
     btn.disabled = true;
 
     try {
-        // Chamada para o seu servidor local (ou API do Google direta)
-       const response = await fetch("https://seniorgo.onrender.com/verificar", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ query: query })
-        });
+       // No seu arquivo js/script.js
+const response = await fetch("https://seniorgo.onrender.com", { // <--- COLOQUE SEU LINK DO RENDER AQUI
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ query: query })
+});
 
         const dados = await response.json();
 

@@ -1,104 +1,54 @@
 const express = require("express");
 const cors = require("cors");
+require('dotenv').config();
+const { GoogleGenerativeAI } = require("@google/generative-ai");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+// Configuração do Gemini (Ele vai ler a chave que vamos configurar no Render)
+const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+
 app.use(cors());
 app.use(express.json());
 
-// Cole sua chave entre as aspas
-const API_KEY = process.env.GOOGLE_API_KEY;
-
+// Rota de verificação
 app.post("/verificar", async (req, res) => {
   const { query } = req.body;
 
-  if (!query || query.trim() === "") {
-    return res.status(400).json({
-      found: false,
-      error: "Consulta vazia."
-    });
+  if (!query) {
+    return res.status(400).json({ found: false, error: "Consulta vazia." });
   }
 
   try {
-    const url =
-      "https://factchecktools.googleapis.com/v1alpha1/claims:search" +
-      `?query=${encodeURIComponent(query)}` +
-      "&languageCode=pt" +
-      "&pageSize=5" +
-      `&key=${API_KEY}`;
+    const prompt = `
+      Você é o Assistente Especialista do SeniorGo. Analise a seguinte informação para um idoso: "${query}"
+      1. Comece com: [VERDADEIRO], [FALSO] ou [SUSPEITO].
+      2. Explique de forma simples e carinhosa em no máximo 3 parágrafos.
+    `;
 
-    const respostaGoogle = await fetch(url);
-    const dadosGoogle = await respostaGoogle.json();
-
-    if (!respostaGoogle.ok) {
-      return res.status(respostaGoogle.status).json({
-        found: false,
-        error: dadosGoogle.error?.message || "Erro ao consultar a API."
-      });
-    }
-
-    const claims = dadosGoogle.claims || [];
-
-    if (claims.length === 0) {
-      return res.json({
-        found: false,
-        texto: "Nenhuma checagem correspondente foi encontrada."
-      });
-    }
-
-    const claim = claims[0];
-    const review = claim.claimReview?.[0];
-
-    if (!review) {
-      return res.json({
-        found: false,
-        texto: "A informação foi encontrada, mas não há revisão disponível."
-      });
-    }
-
-    const avaliacao = review.textualRating || "Sem classificação";
-    const avaliacaoNormalizada = avaliacao.toLowerCase();
+    const result = await model.generateContent(prompt);
+    const analiseIA = result.response.text();
 
     let rating = "unknown";
-
-    if (
-      avaliacaoNormalizada.includes("false") ||
-      avaliacaoNormalizada.includes("falso") ||
-      avaliacaoNormalizada.includes("fake") ||
-      avaliacaoNormalizada.includes("enganoso") ||
-      avaliacaoNormalizada.includes("misleading") ||
-      avaliacaoNormalizada.includes("incorrect") ||
-      avaliacaoNormalizada.includes("incorreto")
-    ) {
-      rating = "false";
-    } else if (
-      avaliacaoNormalizada.includes("true") ||
-      avaliacaoNormalizada.includes("verdadeiro") ||
-      avaliacaoNormalizada.includes("correto") ||
-      avaliacaoNormalizada.includes("correct")
-    ) {
-      rating = "true";
-    }
+    if (analiseIA.includes("[FALSO]")) rating = "false";
+    else if (analiseIA.includes("[VERDADEIRO]")) rating = "true";
 
     return res.json({
       found: true,
       rating: rating,
-      texto: avaliacao,
-      claimText: claim.text || query,
-      titulo: review.title || "Checagem encontrada",
-      fonte: review.publisher?.name || "Fonte não informada",
-      url: review.url || ""
+      texto: analiseIA,
+      titulo: "Análise da SeniorGo AI",
+      fonte: "Inteligência Artificial Gemini"
     });
 
   } catch (erro) {
-    return res.status(500).json({
-      found: false,
-      error: "Erro ao consultar a API."
-    });
+    console.error(erro);
+    return res.status(500).json({ found: false, error: "Erro ao consultar a IA." });
   }
 });
 
 app.listen(PORT, () => {
-  console.log(`Servidor rodando em http://localhost:${PORT}`);
+  console.log(`Servidor rodando na porta ${PORT}`);
 });
