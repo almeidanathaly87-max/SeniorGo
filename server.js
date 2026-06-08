@@ -4,7 +4,11 @@ require('dotenv').config();
 const { GoogleGenerativeAI } = require("@google/generative-ai");
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 10000; // O Render exige a porta 10000 ou process.env.PORT
+
+app.listen(PORT, "0.0.0.0", () => {
+  console.log(`Servidor rodando na porta ${PORT}`);
+});
 
 // Configuração do Gemini usando a variável de ambiente
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
