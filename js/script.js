@@ -18,59 +18,60 @@ function goToSearch() {
 // ========================================================
 // CONEXÃO COM A API (VINCULADO NOVAMENTE)
 // ========================================================
+
 async function processResult() {
-    const query = document.getElementById('search-input').value;
+    const queryInput = document.getElementById('search-input');
+    const query = queryInput.value.trim();
     const loading = document.getElementById('loading-msg');
     const btn = document.getElementById('btn-verificar');
 
-    if (!query) return alert("Digite algo para verificar.");
+    if (!query) return alert("Por favor, digite ou cole algo para verificar.");
 
-    // Mostra carregamento e trava o botão
     loading.style.display = "block";
     btn.disabled = true;
 
     try {
-       // No seu arquivo js/script.js
-const response = await fetch("https://seniorgo.onrender.com/verificar", { // <--- COLOQUE SEU LINK DO RENDER AQUI
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ query: query })
-});
+        const response = await fetch("https://seniorgo.onrender.com/verificar", {
+            method: "POST",
+            headers: { 
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            },
+            body: JSON.stringify({ query: query })
+        });
+
+        if (!response.ok) {
+            throw new Error(`Erro no servidor: ${response.status}`);
+        }
 
         const dados = await response.json();
-
+        
+        // --- ABAIXO: LÓGICA DE EXIBIÇÃO ---
         const card = document.getElementById('result-card');
         const title = document.getElementById('result-title');
         const icon = document.getElementById('result-icon');
         const text = document.getElementById('result-text');
 
-        // Se a API não encontrou nada
-        if (!dados.found) {
-            card.className = "result-box"; // Neutro
-            title.innerText = "NÃO ENCONTRADO";
-            icon.innerText = "⚠️";
-            text.innerText = "Não conseguimos encontrar uma checagem oficial para essa informação. Procure fontes confiáveis.";
-        } 
-        // Se a API classificou como FALSO
-        else if (dados.rating === "false") {
+        if (dados.rating === "false") {
             card.className = "result-box res-falso";
             title.innerText = "FALSO";
             icon.innerText = "❌";
-            text.innerText = dados.texto || "A checagem indica que essa informação não é verdadeira.";
-        } 
-        // Se a API classificou como VERDADEIRO
-        else {
+        } else if (dados.rating === "true") {
             card.className = "result-box res-verdadeiro";
             title.innerText = "VERDADEIRO";
             icon.innerText = "✅";
-            text.innerText = dados.texto || "A checagem confirma que essa informação é real.";
+        } else {
+            card.className = "result-box"; // Estilo neutro para suspeitos ou erro
+            title.innerText = "SUSPEITO";
+            icon.innerText = "⚠️";
         }
 
+        text.innerText = dados.texto;
         showScreen('view-result');
 
     } catch (error) {
-        console.error("Erro ao conectar na API:", error);
-        alert("Erro ao conectar com o servidor. Verifique se o API está rodando.");
+        console.error("Erro na conexão:", error);
+        alert("Ocorreu um erro ao conectar com a IA. Tente novamente em alguns segundos.");
     } finally {
         loading.style.display = "none";
         btn.disabled = false;
