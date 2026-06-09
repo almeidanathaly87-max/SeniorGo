@@ -19,7 +19,7 @@ if (!process.env.GEMINI_API_KEY) {
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
 // Mudamos para 'gemini-1.5-flash', que é o sucessor estável e gratuito
-const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
 
 app.post("/verificar", async (req, res) => {
     const { query } = req.body;
