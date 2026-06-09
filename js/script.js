@@ -31,7 +31,7 @@ async function processResult() {
 
     try {
        // No seu arquivo js/script.js
-const response = await fetch("https://seniorgo.onrender.com", { // <--- COLOQUE SEU LINK DO RENDER AQUI
+const response = await fetch("https://seniorgo.onrender.com/verificar", { // <--- COLOQUE SEU LINK DO RENDER AQUI
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ query: query })
